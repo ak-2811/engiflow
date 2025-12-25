@@ -356,7 +356,7 @@ export default function Signup() {
           <div className="tabs">
             <button
               className="tab inactive"
-              onClick={() => navigate("/login")}
+              onClick={() => navigate("/")}
               type="button"
             >
               Login

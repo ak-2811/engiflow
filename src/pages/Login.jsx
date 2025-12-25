@@ -21,10 +21,11 @@ export default function Login() {
       const res=await axios.post("http://127.0.0.1:8000/api/auth/login/", form);
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
-
+      localStorage.setItem('jwt_token', res.data.access );
+      navigate('dashboard/civil')
     // later this will go to client dashboard
-    alert("Login successful");
-    alert("Logged in (stub)");
+    // alert("Login successful");
+    // alert("Logged in (stub)");
     } catch (error) {
       console.error(error)
       alert("Login failed");

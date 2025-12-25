@@ -7,6 +7,12 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
+
+/* Apply the soft purple -> white gradient to the full page so it shows under all sections */
+html, body {
+  background: linear-gradient(180deg, #f3e8ff 0%, #ffffff 65%);
+  background-attachment: fixed;
+}
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -57,7 +63,13 @@ button:focus-visible {
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
+    /* make the page background a soft gradient (same as Login/Signup/Services) */
     background-color: #ffffff;
+  }
+  /* apply full-page gradient so it continues under all sections */
+  html, body {
+    background: linear-gradient(180deg, #f3e8ff 0%, #ffffff 65%);
+    background-attachment: fixed;
   }
   a:hover {
     color: #747bff;
