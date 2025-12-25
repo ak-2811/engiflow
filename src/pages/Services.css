@@ -144,8 +144,8 @@
 .quotation-btn {
   margin-top: 2rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(90deg, #6366f1, #7c3aed);
-  color: #fff;
+  background: linear-gradient(90deg, #6366f1, #7c3aed) !important;
+  color: #fff !important;
   border: none;
   border-radius: 10px;
   font-size: 1rem;
@@ -206,75 +206,7 @@
   color: transparent;
 }
 
-.services-lead{
-/* Quotation Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0,0,0,0.3);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-.modal-content {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.12);
-  min-width: 340px;
-  max-width: 90vw;
-}
-.modal-content h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-}
-.modal-content label {
-  display: block;
-  margin-bottom: 1rem;
-  font-weight: 500;
-}
-.modal-content input,
-.modal-content textarea,
-.modal-content select {
-  width: 100%;
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 6px;
-  font-size: 1rem;
-}
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
-}
-.quotation-btn {
-  margin-top: 2rem;
-  padding: 0.75rem 1.5rem;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: 0 2px 8px rgba(99,102,241,0.08);
-  transition: background 0.2s;
-}
-.quotation-btn:hover {
-  background: #6366f1;
-}
-  color: var(--muted);
-  max-width: 920px; /* allow slightly wider readable measure */
-  margin: 12px auto 32px auto; /* center horizontally and space below the heading */
-  font-size: 17px;
-  line-height: 1.6;
-}
+/* ...existing code... */
 
 .services-section{
   margin: 28px 0 44px 0;

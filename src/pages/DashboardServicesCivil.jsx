@@ -49,9 +49,11 @@ export default function DashboardServicesCivil(){
           </article>
         ))}
       </div>
+      <div className="request-row">
       <button className="btn quotation-btn" onClick={() => setShowModal(true)}>
         Request for Quotation
       </button>
+      </div>
       {showModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -59,14 +61,14 @@ export default function DashboardServicesCivil(){
             <form onSubmit={handleSubmit}>
               <label>Services</label>
               <div className="chips-selector">
-                {form.services.map((service, idx) => (
+                {form.services.map((service) => (
                   <span key={service} className="chip">
                     {service}
                     <button type="button" className="chip-remove" onClick={() => setForm(f => ({ ...f, services: f.services.filter(s => s !== service) }))} aria-label={`Remove ${service}`}>&times;</button>
                   </span>
                 ))}
                 <div className="chip-options">
-                  {initialCivil.filter(s => !form.services.includes(s)).map((s, i) => (
+                  {initialCivil.filter(s => !form.services.includes(s)).map((s) => (
                     <button
                       key={s}
                       type="button"
