@@ -1,3 +1,76 @@
-from django.shortcuts import render
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.parsers import MultiPartParser
+from .models import CustomServiceRequest, CustomServiceImage, Service
+from .serializers import CustomServiceRequestSerializer, CustomServiceImageSerializer, ServiceSerializer
+from rest_framework.response import Response
+from rest_framework import viewsets
+# from rest_framework.response import Response
+from .models import Service, Client
+from .serializers import ServiceSerializer
 
-# Create your views here.
+
+# View for fetching predefined services (parent + child)
+class ServiceListView(generics.ListAPIView):
+    queryset = Service.objects.all()
+    serializer_class = ServiceSerializer
+    permission_classes = [IsAuthenticated]
+    def list(self, request, *args, **kwargs):
+        # Customize the response to include service_info for each service
+        services = self.get_queryset()
+        response_data = []
+
+        for service in services:
+            response_data.append({
+                "id": service.id,
+                "name": service.name,
+                "service_info": [{
+                    "id": sub_service.id,
+                    "name": sub_service.name,
+                    # "description": sub_service.description,
+                } for sub_service in service.service_info.all()]  # Assuming you have a related name `service_info` for the sub-services
+            })
+        
+        return Response(response_data)
+
+# class ServiceViewSet(viewsets.ModelViewSet):
+#     queryset = Service.objects.all()
+#     serializer_class = ServiceSerializer
+#     permission_classes = [IsAuthenticated]
+
+#     def list(self, request, *args, **kwargs):
+#         # Customize the response to include service_info for each service
+#         services = self.get_queryset().select_related('service_info')
+#         response_data = []
+
+#         for service in services:
+#             response_data.append({
+#                 "id": service.id,
+#                 "name": service.name,
+#                 "service_info": [{
+#                     "id": sub_service.id,
+#                     "name": sub_service.name,
+#                     # "description": sub_service.description,
+#                 } for sub_service in service.service_info.all()]  # Assuming you have a related name `service_info` for the sub-services
+#             })
+        
+#         return Response(response_data)
+
+# View for creating custom service request (handles multiple images)
+class CustomServiceRequestCreateView(generics.CreateAPIView):
+    queryset = CustomServiceRequest.objects.all()
+    serializer_class = CustomServiceRequestSerializer
+    permission_classes = [IsAuthenticated]  # Only authenticated clients can create services
+    parser_classes = [MultiPartParser]  # To handle image uploads
+
+    def perform_create(self, serializer):
+        # Create the custom service request instance
+        service_request = serializer.save(client=self.request.user.client)
+
+        # Now handle saving the images
+        images = self.request.FILES.getlist('images')  # Get all uploaded images
+        for image in images:
+            # Create a new CustomServiceImage instance for each uploaded image
+            CustomServiceImage.objects.create(custom_service=service_request, image=image)
+
+        return service_request

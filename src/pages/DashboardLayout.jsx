@@ -12,8 +12,9 @@ export default function DashboardLayout() {
         <nav>
           <ul>
             <li><NavLink to="/dashboard" end className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Home</NavLink></li>
-            <li><NavLink to="/dashboard/civil" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Civil Engineering</NavLink></li>
-            <li><NavLink to="/dashboard/structural" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}>Structural Engineering</NavLink></li>
+              <li><NavLink to="/dashboard" end className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}><span role="img" aria-label="home" style={{marginRight: '8px'}}>🏠</span>Home</NavLink></li>
+              <li><NavLink to="/dashboard/civil" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}><span role="img" aria-label="civil" style={{marginRight: '8px'}}>🏗️</span>Civil Engineering</NavLink></li>
+              <li><NavLink to="/dashboard/structural" className={({ isActive }) => (isActive ? 'nav-link active' : 'nav-link')}><span role="img" aria-label="structural" style={{marginRight: '8px'}}>🏢</span>Structural Engineering</NavLink></li>
           </ul>
         </nav>
         <div className="nav-footer">
@@ -29,8 +30,8 @@ export default function DashboardLayout() {
           </div>
 
           <div className="header-actions">
-            <button className="btn primary">+ New Project</button>
-            <button className="btn secondary" onClick={() => { navigate('/dashboard/civil') }}>View Services</button>
+            {/* <button className="btn primary">+ New Project</button> */}
+            {/* <button className="btn secondary" onClick={() => { navigate('/dashboard/civil') }}>View Services</button> */}
           </div>
         </header>
 

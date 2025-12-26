@@ -22,7 +22,7 @@ export default function Login() {
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem('jwt_token', res.data.access );
-      navigate('dashboard/civil')
+      navigate('dashboard/')
     // later this will go to client dashboard
     // alert("Login successful");
     // alert("Logged in (stub)");

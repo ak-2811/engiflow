@@ -1,0 +1,15 @@
+from django.urls import path,include
+from .views import CustomServiceRequestCreateView
+from .views import ServiceListView
+from rest_framework.routers import DefaultRouter
+
+# Create the router and register the ServiceViewSet
+# router = DefaultRouter()
+# router.register(r'services', ServiceViewSet)
+
+
+urlpatterns = [
+    path('services/', ServiceListView.as_view(), name='service-list'),  # Fetch services with sub-services
+    # path('services/',include(router.urls)),
+    path('custom-request/', CustomServiceRequestCreateView.as_view(), name='custom-service-request'),  # Create custom service
+]

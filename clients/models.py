@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 import uuid
+from django.contrib.auth.models import User
+
 # Create your models here.
 class Client(models.Model):
     id = models.UUIDField(
@@ -8,15 +10,16 @@ class Client(models.Model):
         default=uuid.uuid4,
         editable=False
     )
-    company = models.ForeignKey(
-        'accounts.Company',
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True,
-        related_name='client'
-    )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name="client")
+    # company = models.ForeignKey(
+    #     'accounts.Company',
+    #     on_delete=models.CASCADE,
+    #     null=True,
+    #     blank=True,
+    #     related_name='client'
+    # )
     name = models.CharField(max_length=255)
-    address = models.TextField(blank=True)
+    country = models.CharField(blank=True)
     phone = models.CharField(max_length=20, blank=True)
     company_phone = models.CharField(max_length=20, blank=True)
     email = models.EmailField()
