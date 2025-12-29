@@ -3,7 +3,7 @@ import "./Signup.css";
 // import axios from "axios";
 // import api from "../api/api";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 
 export default function Signup() {
@@ -219,6 +219,8 @@ export default function Signup() {
   ];
   // const [activeTab, setActiveTab] = useState("signup"); // 'signup' | 'login'
   // const [showForgot, setShowForgot] = useState(false);
+  const location = useLocation()
+  const activeTab = location.pathname === '/signup' ? 'signup' : ''
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -355,7 +357,7 @@ export default function Signup() {
 
           <div className="tabs">
             <button
-              className="tab inactive"
+              className={"tab " + (activeTab === "login" ? "active" : "inactive")}
               onClick={() => navigate("/")}
               type="button"
             >
@@ -363,7 +365,7 @@ export default function Signup() {
             </button>
 
             <button
-              className="tab active"
+              className={"tab " + (activeTab === "signup" ? "active" : "inactive")}
               onClick={() => navigate("/signup")}
               type="button"
             >

@@ -8,6 +8,7 @@ from rest_framework import viewsets
 # from rest_framework.response import Response
 from .models import Service, Client
 from .serializers import ServiceSerializer
+from rest_framework.views import APIView
 
 
 # View for fetching predefined services (parent + child)
@@ -74,3 +75,26 @@ class CustomServiceRequestCreateView(generics.CreateAPIView):
             CustomServiceImage.objects.create(custom_service=service_request, image=image)
 
         return service_request
+    
+#View for getting the count of the active and pending rfq
+class RFQStatsView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        client = request.user.client  # safe due to OneToOne
+
+        pending_count = CustomServiceRequest.objects.filter(
+            client=client,
+            status='Pending'
+        ).count()
+
+        active_count = CustomServiceRequest.objects.filter(
+            client=client,
+            status='Active'
+        ).count()
+
+        return Response({
+            "pending_rfqs": pending_count,
+            "active_rfqs": active_count
+        })
+
