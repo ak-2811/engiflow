@@ -4,6 +4,7 @@ import DashboardLayout from './pages/DashboardLayout'
 import DashboardHome from './pages/DashboardHome'
 import DashboardServicesCivil from './pages/DashboardServicesCivil'
 import DashboardServicesStructural from './pages/DashboardServicesStructural'
+import AdminDashboard from './pages/AdminDashboard'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
@@ -19,6 +20,7 @@ function App() {
         <Route path="civil" element={<DashboardServicesCivil />} />
         <Route path="structural" element={<DashboardServicesStructural />} />
       </Route>
+      <Route path='admin' element={<AdminDashboard />} />
 
       <Route path="/" element={<Login />} />
       <Route path="*" element={<Navigate to="/" replace />} />

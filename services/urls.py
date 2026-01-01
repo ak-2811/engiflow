@@ -1,6 +1,6 @@
 from django.urls import path,include
 from .views import CustomServiceRequestCreateView
-from .views import ServiceListView, RFQStatsView
+from .views import ServiceListView, RFQStatsView,AdminRFQListView
 from rest_framework.routers import DefaultRouter
 
 # Create the router and register the ServiceViewSet
@@ -13,4 +13,5 @@ urlpatterns = [
     # path('services/',include(router.urls)),
     path('custom-request/', CustomServiceRequestCreateView.as_view(), name='custom-service-request'),  # Create custom service
     path('rfq-stats/', RFQStatsView.as_view(), name='rfq_stats'),
+    path('admin/rfqs/', AdminRFQListView.as_view()),
 ]

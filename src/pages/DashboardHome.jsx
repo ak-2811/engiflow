@@ -155,7 +155,7 @@ const activities = [
             <div className="summary-row"><span>Completion Rate</span><strong className="success">92%</strong></div>
           </div>
 
-          <div className="summary-card quick-actions-card">
+          {/* <div className="summary-card quick-actions-card">
             <h4>Quick Actions</h4>
             <div className="actions-list">
               <button className="action-btn" onClick={() => setShowModal(true)}>
@@ -171,7 +171,7 @@ const activities = [
                 <span className="arrow">→</span>
               </button>
             </div>
-          </div>
+          </div> */}
         </aside>
         {showModal && (
           <div className="modal-overlay">

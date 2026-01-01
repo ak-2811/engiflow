@@ -1,5 +1,5 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,IsAdminUser
 from rest_framework.parsers import MultiPartParser
 from .models import CustomServiceRequest, CustomServiceImage, Service
 from .serializers import CustomServiceRequestSerializer, CustomServiceImageSerializer, ServiceSerializer
@@ -97,4 +97,23 @@ class RFQStatsView(APIView):
             "pending_rfqs": pending_count,
             "active_rfqs": active_count
         })
+class AdminRFQListView(APIView):
+    permission_classes = [IsAuthenticated, IsAdminUser]
+
+    def get(self, request):
+        rfqs = CustomServiceRequest.objects.select_related(
+            'client__user'
+        ).order_by('-created_at')
+
+        data = [
+            {
+                "id": f"RFQ-{r.id}",
+                "client": r.client.user.username,
+                "description": r.description,
+                "date": r.created_at.strftime("%Y-%m-%d %H:%M"),
+            }
+            for r in rfqs
+        ]
+
+        return Response(data)
 

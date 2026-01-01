@@ -47,6 +47,7 @@ SIMPLE_JWT = {
 # Application definition
 
 INSTALLED_APPS = [
+    "jazzmin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -151,3 +152,41 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+JAZZMIN_SETTINGS = {
+    "site_title": "EngiFlow Admin",
+    "site_header": "EngiFlow",
+    "site_brand": "EngiFlow",
+    "welcome_sign": "Welcome to EngiFlow Admin",
+    "copyright": "EngiFlow",
+
+    "search_model": [
+        "auth.User",
+        "services.CustomServiceRequest",
+    ],
+
+    "topmenu_links": [
+        {"name": "Dashboard", "url": "admin:index", "permissions": ["auth.view_user"]},
+    ],
+
+    "show_sidebar": True,
+    "navigation_expanded": True,
+
+    "icons": {
+        "auth": "fas fa-users",
+        "clients.Client": "fas fa-user-tie",
+        "services.CustomServiceRequest": "fas fa-file-contract",
+        "services.CustomServiceImage": "fas fa-image",
+    },
+}
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",          # try: darkly, flatly, lumen, cosmo
+    "navbar": "navbar-dark",
+    "sidebar": "sidebar-dark-primary",
+    "accent": "accent-primary",
+    "brand_colour": "navbar-primary",
+
+    "sidebar_nav_small_text": False,
+    "sidebar_disable_expand": False,
+    "sidebar_nav_child_indent": True,
+}
+
