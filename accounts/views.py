@@ -24,11 +24,21 @@ class LoginView(generics.GenericAPIView):
 
         if not user.check_password(password):
             return Response({"error": "Invalid credentials"}, status=400)
+        
+        role = "unknown"
+
+        if user.is_staff or user.is_superuser:
+            role = "admin"
+        elif hasattr(user, "client"):
+            role = "client"
+        elif hasattr(user, "projectmanager"):
+            role = "project_manager"
 
         refresh = RefreshToken.for_user(user)
 
         return Response({
             "access": str(refresh.access_token),
             "refresh": str(refresh),
+            "role": role,
             "first_name": user.first_name,
         })

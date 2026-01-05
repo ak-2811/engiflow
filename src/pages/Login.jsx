@@ -24,9 +24,14 @@ export default function Login() {
       localStorage.setItem("access", res.data.access);
       localStorage.setItem("refresh", res.data.refresh);
       localStorage.setItem('first_name', res.data.first_name );
+      localStorage.setItem('role', res.data.role );
       localStorage.setItem('isLoggedIn', 'true');
-      console.log("Data",res.data)
-      navigate('dashboard/')
+      // console.log("Data",res.data)
+      if (res.data.role === "admin") {
+      navigate("/admin");
+    } else {
+      navigate("/dashboard");
+    }
     // later this will go to client dashboard
     // alert("Login successful");
     // alert("Logged in (stub)");

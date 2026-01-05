@@ -2,11 +2,13 @@ import React from 'react'
 import './Dashboard.css'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate} from 'react-router-dom'
 
 export default function DashboardHome() {
 
 const [allServices, setAllServices] = useState([])
 const [showModal, setShowModal] = useState(false)
+const navigate = useNavigate()
 
 const [form, setForm] = useState({
   services: [],
@@ -118,7 +120,16 @@ const activities = [
     <div className="dashboard-content">
       <section className="stats-grid">
         {stats.map((s, i) => (
-          <div className="stat-card" key={i}>
+          <div
+                className="stat-card"
+                key={i}
+                style={{ cursor: s.title === 'Active RFQs' ? 'pointer' : 'default' }}
+                onClick={() => {
+                  if (s.title === 'Active RFQs') {
+                    navigate('/rfqs?panel=client');
+                  }
+                }}
+              >
             <div className="stat-icon">{s.icon}</div>
             <div className="stat-body">
               <div className="stat-note">{s.note}</div>

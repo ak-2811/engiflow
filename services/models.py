@@ -30,6 +30,7 @@ class CustomServiceRequest(models.Model):
     selected_services = models.ManyToManyField(Service_Info)
     status = models.CharField(max_length=50, default="Pending")  # Pending/Approved/Rejected
     created_at = models.DateTimeField(auto_now_add=True)
+    end_date=models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.service_name

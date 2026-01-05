@@ -3,6 +3,7 @@ import './AdminDashboard.css';
 import './Dashboard.css';
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate} from 'react-router-dom'
 
 export default function AdminDashboard() {
   const stats = [
@@ -28,7 +29,7 @@ export default function AdminDashboard() {
       changeType: 'up',
     },
   ];
-
+  const Navigate=useNavigate()
   const [submissions, setSubmissions] = useState([])
 
   useEffect(() => {
@@ -80,7 +81,7 @@ export default function AdminDashboard() {
         <nav>
           <ul>
             <li className="dashboard-nav-item">
-              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+              <button className="nav-link" onClick={()=>Navigate('/admin')} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
                 <span role="img" aria-label="dashboard" style={{marginRight: '8px'}}>📊</span>Home
               </button>
             </li>
@@ -109,7 +110,17 @@ export default function AdminDashboard() {
         </header>
         <section className="admin-stats">
           {stats.map((stat, idx) => (
-            <div className="admin-stat-card" key={idx}>
+            // <div className="admin-stat-card" key={idx}>
+              <div
+                className="admin-stat-card"
+                key={idx}
+                style={{ cursor: stat.label === 'Active RFQs' ? 'pointer' : 'default' }}
+                onClick={() => {
+                  if (stat.label === 'Active RFQs') {
+                    Navigate('/rfqs?panel=admin');
+                  }
+                }}
+              >
               <div className="admin-stat-row" style={{justifyContent: 'center'}}>
                 <span className="admin-stat-icon">{stat.icon}</span>
                 <span className="admin-stat-label">{stat.label}</span>
@@ -134,7 +145,8 @@ export default function AdminDashboard() {
                 <th>ID</th>
                 <th>Client</th>
                 <th>Description</th>
-                <th>Date</th>
+                <th>Submitted Date</th>
+                <th>End Date</th>
                 {/* <th>Amount</th> */}
                 {/* <th>Status</th>
                 <th>Actions</th> */}
@@ -143,10 +155,11 @@ export default function AdminDashboard() {
             <tbody>
               {submissions.map((row, idx) => (
                 <tr key={idx}>
-                  <td>{row.id}</td>
+                  <td><span onClick={()=>Navigate(`/rfq/${row.raw_id}`)} style={{ cursor: 'pointer', color: '#6A5AE0', fontWeight: 600 }}>{row.id}</span></td>
                   <td><b>{row.client}</b></td>
                   <td>{row.description? row.description.length > 25? row.description.slice(0, 22) + '...': row.description: '—'}</td>
                   <td>{row.date}</td>
+                  <td>{row.end_date}</td>
                   {/* <td>{row.amount}</td> */}
                   {/* <td><span className={`admin-status ${row.statusClass}`}>{row.status}</span></td> */}
                   {/* <td><button className="admin-table-actions">&#8942;</button></td> */}

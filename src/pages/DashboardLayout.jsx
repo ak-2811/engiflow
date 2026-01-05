@@ -13,6 +13,7 @@ const [form, setForm] = useState({
   services: [],
   title: '',
   description: '',
+  end_date: '',
   images: []
 })
 useEffect(() => {
@@ -59,6 +60,7 @@ function handleSubmit(e) {
   form.images.forEach(img => {
     formData.append('images', img)
   })
+  formData.append('end_date', form.end_date)
 
   axios.post(
     'http://127.0.0.1:8000/api/service/custom-request/',
@@ -177,6 +179,10 @@ function handleSubmit(e) {
                   Images
                   <input type="file" multiple accept="image/*" onChange={handleImageChange} />
                 </label>
+                <label>
+                End Date
+                <input type="date" name="end_date" value={form.end_date} onChange={handleInputChange} required />
+              </label>
 
                 <div className="modal-actions">
                   <button type="submit" className="btn primary">Submit</button>

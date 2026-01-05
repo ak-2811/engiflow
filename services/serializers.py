@@ -19,7 +19,7 @@ class CustomServiceRequestSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = CustomServiceRequest
-        fields = ['id', 'client', 'service_name', 'description', 'selected_services', 'status', 'created_at']
+        fields = ['id', 'client', 'service_name', 'description', 'selected_services', 'status', 'created_at','end_date']
         read_only_fields = ['client', 'status', 'created_at']
     
     def create(self, validated_data):
