@@ -116,10 +116,12 @@ function handleSubmit(e) {
                 </li>
           </ul>
           {showModal && (
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h3>Request for Quotation</h3>
-
+          <div className="modal-overlay" style={{position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999}}>
+            <div className="modal-content" style={{width: '92%', maxWidth: 1100, background: '#fff', borderRadius: 14, padding: 28, boxShadow: '0 20px 60px rgba(15,23,42,0.25)'}}>
+              <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 18}}>
+                <h2 style={{margin: 0, color: '#4f46e5'}}>Request for Quotation</h2>
+              </div>
+              
               <form onSubmit={handleSubmit}>
                 <label>Services</label>
 
@@ -132,14 +134,8 @@ function handleSubmit(e) {
                         <button
                           type="button"
                           className="chip-remove"
-                          onClick={() =>
-                            setForm(f => ({
-                              ...f,
-                              services: f.services.filter(s => s !== id)
-                            }))
-                          }
-                        >
-                          ×
+                          onClick={() => setForm(f => ({...f,services: f.services.filter(s => s !== id) }))} style={{background: 'transparent', border: 'none', fontSize: 20, cursor: 'pointer'}}>
+                          ✕
                         </button>
                       </span>
                     )
@@ -165,23 +161,23 @@ function handleSubmit(e) {
                   </div>
                 </div>
 
-                <label>
+                <label style={{display: 'block', fontWeight: 600, color: '#4c1d95', marginBottom: 8}}>
                   Title
-                  <input name="title" value={form.title} onChange={handleInputChange} required />
+                  <input name="title" value={form.title} onChange={handleInputChange} style={{width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #e6e9ff', fontSize: '1rem'}} required />
                 </label>
 
-                <label>
+                <label style={{display: 'block', fontWeight: 600, color: '#4c1d95', marginBottom: 8}}>
                   Description
-                  <textarea name="description" value={form.description} onChange={handleInputChange} required />
+                  <textarea name="description" value={form.description} onChange={handleInputChange} style={{width: '100%', padding: '14px', borderRadius: 10, border: '1.5px solid #e6e9ff', fontSize: '1rem', minHeight: 120}} required />
                 </label>
 
-                <label>
+                <label style={{display: 'block', fontWeight: 600, color: '#4c1d95', marginBottom: 8}}>
                   Images
-                  <input type="file" multiple accept="image/*" onChange={handleImageChange} />
+                  <input type="file" multiple accept="image/*" onChange={handleImageChange} style={{width: '100%', padding: '12px', borderRadius: 8, border: '1.5px solid #e6e9ff', background: '#fafbff'}} />
                 </label>
-                <label>
+                <label style={{display: 'block', fontWeight: 600, color: '#4c1d95', marginBottom: 8}}>
                 End Date
-                <input type="date" name="end_date" value={form.end_date} onChange={handleInputChange} required />
+                <input type="date" name="end_date" value={form.end_date} onChange={handleInputChange} style={{width: '100%', padding: '12px', borderRadius: 10, border: '1.5px solid #e6e9ff', fontSize: '1rem'}} required />
               </label>
 
                 <div className="modal-actions">

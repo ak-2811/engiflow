@@ -113,6 +113,7 @@ class AdminRFQDetailView(APIView):
             "title": rfq.service_name,   # or services_selected
             "client": rfq.client.user.username,
             "date": rfq.created_at.strftime("%B %d, %Y"),
+            "end_date": rfq.end_date.strftime("%Y-%m-%d") if rfq.end_date else "-",
             "overview": rfq.description,
             "attachments": [
                 {
