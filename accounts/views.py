@@ -2,11 +2,11 @@ from rest_framework import generics, permissions
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-from .serializers import ClientRegisterSerializer
+from .serializers import RegisterSerializer
 
 
-class ClientRegisterView(generics.CreateAPIView):
-    serializer_class = ClientRegisterSerializer
+class RegisterView(generics.CreateAPIView):
+    serializer_class = RegisterSerializer
     permission_classes = [permissions.AllowAny]
 
 
@@ -31,7 +31,7 @@ class LoginView(generics.GenericAPIView):
             role = "admin"
         elif hasattr(user, "client"):
             role = "client"
-        elif hasattr(user, "projectmanager"):
+        elif hasattr(user, "project_manager"):
             role = "project_manager"
 
         refresh = RefreshToken.for_user(user)

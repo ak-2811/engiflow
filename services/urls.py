@@ -1,6 +1,7 @@
 from django.urls import path,include
 from .views import CustomServiceRequestCreateView
-from .views import ServiceListView, RFQStatsView,AdminRFQListView,AdminRFQDetailView,AdminActiveRFQsView,ClientActiveRFQsView
+from .views import ServiceListView, RFQStatsView,AdminRFQListView,AdminRFQDetailView,AdminActiveRFQsView,ClientActiveRFQsView,AdminPendingRFQsView,AdminAllRFQsView,AssignProjectManagerView,PMAllRFQsView,PMActiveRFQsView
+from .views import PMPendingRFQsView
 from rest_framework.routers import DefaultRouter
 
 # Create the router and register the ServiceViewSet
@@ -16,6 +17,11 @@ urlpatterns = [
     path('admin/rfqs/', AdminRFQListView.as_view()),
     path('admin/rfqs/<int:pk>/', AdminRFQDetailView.as_view()),
     path("admin/rfqs/active/", AdminActiveRFQsView.as_view()),
+    path("admin/rfqs/pending/", AdminPendingRFQsView.as_view()),
+    path("admin/rfqs/all/", AdminAllRFQsView.as_view()),
     path("client/rfqs/active/", ClientActiveRFQsView.as_view()),
-
+    path("rfq/<int:pk>/assign-pm/", AssignProjectManagerView.as_view()),
+    path("pm/rfqs/all/",PMAllRFQsView.as_view()),
+    path("pm/rfqs/active/",PMActiveRFQsView.as_view()),
+    path("pm/rfqs/pending/",PMPendingRFQsView.as_view()),
 ]

@@ -105,9 +105,9 @@ function handleSubmit(e) {
 
 
 const stats = [
-  { title: 'Total Projects', value: '24', note: '+12% this month', icon: '📁' },
-  { title: 'Active RFQs', value: rfqStats.active, note: '+3 this week', icon: '💬' },
-  { title: 'Quotations Sent', value: '42', note: '+5 this week', icon: '✅' },
+  { title: 'Total Projects', value: '24', icon: '📁' },
+  { title: 'Active RFQs', value: rfqStats.active, icon: '💬' },
+  { title: 'Quotations Sent', value: '42', icon: '✅' },
 ]
 
 const activities = [
@@ -126,13 +126,14 @@ const activities = [
                 style={{ cursor: s.title === 'Active RFQs' ? 'pointer' : 'default' }}
                 onClick={() => {
                   if (s.title === 'Active RFQs') {
-                    navigate('/rfqs?panel=client');
+                    localStorage.setItem('Status','Active');
+                    navigate('/rfqs?panel=client&status=Active');
                   }
                 }}
               >
             <div className="stat-icon">{s.icon}</div>
             <div className="stat-body">
-              <div className="stat-note">{s.note}</div>
+              {/* <div className="stat-note">{s.note}</div> */}
               <div className="stat-title">{s.title}</div>
               <div className="stat-value">{s.value}</div>
             </div>
@@ -251,7 +252,7 @@ const activities = [
                 </label>
 
                 <div className="modal-actions">
-                  <button type="submit" className="btn primary">Submit</button>
+                  <button type="submit" className="btn primary" onClick={()=>navigate('/dashboard')}>Submit</button>
                   <button type="button" className="btn" onClick={() => setShowModal(false)}>
                     Cancel
                   </button>

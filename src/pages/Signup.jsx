@@ -11,6 +11,7 @@ export default function Signup() {
     first_name: "",
     last_name: "",
     username: "",
+    user_type:"",
     email: "",
     password: "",
     phone: "",
@@ -240,7 +241,7 @@ export default function Signup() {
         //   country: form.country,
         // });
         await axios.post(
-        "http://127.0.0.1:8000/api/auth/client/register/",
+        "http://127.0.0.1:8000/api/auth/register/",
         form
       );
         navigate("/");
@@ -405,6 +406,19 @@ export default function Signup() {
                 </div>
 
                 <div className="input-group">
+                  <select
+                    name="user_type"
+                    value={form.user_type}
+                    onChange={handleChange}
+                    required
+                  >
+                    <option value="">Select user type</option>
+                    <option value="project_manager">Project Manager</option>
+                    <option value="client">Client</option>
+                  </select>
+                </div>
+
+                <div className="input-group">
                   <input
                     name="phone"
                     type="tel"
@@ -444,6 +458,7 @@ export default function Signup() {
                     name="email"
                     placeholder="Email address"
                     onChange={handleChange}
+                    required
                   />
                 </div>
 

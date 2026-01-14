@@ -60,6 +60,8 @@ INSTALLED_APPS = [
     "services",
     "rest_framework",
     "corsheaders",
+    "project_managers",
+    "chat",
 ]
 
 MIDDLEWARE = [

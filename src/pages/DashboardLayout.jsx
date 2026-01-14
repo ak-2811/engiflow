@@ -73,7 +73,8 @@ function handleSubmit(e) {
     }
   )
   .then(() => {
-    alert('Request for Quotation submitted successfully')
+    // alert('Request for Quotation submitted successfully')
+    navigate('/dashboard')
     setShowModal(false)
     setForm({ services: [], title: '', description: '', images: [] })
   })
@@ -181,7 +182,7 @@ function handleSubmit(e) {
               </label>
 
                 <div className="modal-actions">
-                  <button type="submit" className="btn primary">Submit</button>
+                  <button type="submit" className="btn primary" onClick={()=>navigate('/dashboard')}>Submit</button>
                   <button type="button" className="btn" onClick={() => setShowModal(false)}>
                     Cancel
                   </button>
@@ -194,7 +195,7 @@ function handleSubmit(e) {
         </nav>
         <div className="nav-footer">
           <button className="btn" onClick={() => {
-            localStorage.removeItem('isLoggedIn');
+            localStorage.clear();
             navigate('/', { replace: true });
           }}>Sign Out</button>
         </div>

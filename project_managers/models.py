@@ -2,22 +2,15 @@ from django.db import models
 from django.conf import settings
 import uuid
 from django.contrib.auth.models import User
-from project_managers.models import ProjectManager
+
 # Create your models here.
-class Client(models.Model):
+class ProjectManager(models.Model):
     id = models.UUIDField(
         primary_key=True,
         default=uuid.uuid4,
         editable=False
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name="client")
-    # company = models.ForeignKey(
-    #     'accounts.Company',
-    #     on_delete=models.CASCADE,
-    #     null=True,
-    #     blank=True,
-    #     related_name='client'
-    # )
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True, related_name="project_manager")
     name = models.CharField(max_length=255)
     country = models.CharField(blank=True)
     phone = models.CharField(max_length=20, blank=True)

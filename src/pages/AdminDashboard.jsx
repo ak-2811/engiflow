@@ -6,18 +6,38 @@ import axios from 'axios'
 import { useNavigate} from 'react-router-dom'
 
 export default function AdminDashboard() {
+
+  const [rfqStats, setRfqStats] = useState({
+    total_active: 0,
+    total_pending:0
+  })
+
+  useEffect(() => {
+    const token = localStorage.getItem('access')
+    if (!token) return
+
+    axios.get('http://127.0.0.1:8000/api/service/rfq-stats/', {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+    .then(res => {
+      setRfqStats({
+        total_active: res.data.total_active_rfqs,
+        total_pending: res.data.total_pending_rfqs
+      })
+    })
+    .catch(err => console.error(err))
+  }, [])
   const stats = [
     {
-      icon: '👤',
-      label: 'Total Clients',
-      value: '1,284',
-      // change: '+12.5%',
-      changeType: 'up',
+      icon: '⏳',
+      label: 'Pending RFQs',
+      value: rfqStats.total_pending,
+      changeType: 'down',
     },
     {
       icon: '📄',
       label: 'Active RFQs',
-      value: '156',
+      value: rfqStats.total_active,
       // change: '+8.2%',
       changeType: 'up',
     },
@@ -91,8 +111,11 @@ export default function AdminDashboard() {
               </button>
             </li>
             <li className="dashboard-nav-item">
-              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
-                <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs
+              <button className="nav-link" onClick={()=>{
+                localStorage.setItem('Status','All'); 
+                Navigate('/rfqs?panel=Admin&status=All');
+                }}style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs 
               </button>
             </li>
             {/* <li className="dashboard-nav-item">
@@ -102,6 +125,12 @@ export default function AdminDashboard() {
             </li> */}
           </ul>
         </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.clear();
+            Navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
       </aside>
       <main className="dashboard-main">
         <header className="admin-header">
@@ -114,10 +143,16 @@ export default function AdminDashboard() {
               <div
                 className="admin-stat-card"
                 key={idx}
-                style={{ cursor: stat.label === 'Active RFQs' ? 'pointer' : 'default' }}
+                style={{cursor: 'pointer'}}
+    
                 onClick={() => {
                   if (stat.label === 'Active RFQs') {
-                    Navigate('/rfqs?panel=admin');
+                    localStorage.setItem('Status','Active');
+                    Navigate('/rfqs?panel=admin&status=Active');
+                  }
+                  if (stat.label === 'Pending RFQs'){
+                    localStorage.setItem('Status','Pending');
+                    Navigate('/rfqs?panel=admin&status=Pending');
                   }
                 }}
               >
@@ -144,7 +179,8 @@ export default function AdminDashboard() {
               <tr>
                 <th>ID</th>
                 <th>Client</th>
-                <th>Description</th>
+                {/* <th>Description</th> */}
+                <th>RFQ Name</th>
                 <th>Submitted Date</th>
                 <th>End Date</th>
                 {/* <th>Amount</th> */}
@@ -157,7 +193,8 @@ export default function AdminDashboard() {
                 <tr key={idx}>
                   <td><span onClick={()=>Navigate(`/rfq/${row.raw_id}`)} style={{ cursor: 'pointer', color: '#6A5AE0', fontWeight: 600 }}>{row.id}</span></td>
                   <td><b>{row.client}</b></td>
-                  <td>{row.description? row.description.length > 25? row.description.slice(0, 22) + '...': row.description: '—'}</td>
+                  {/* <td>{row.description? row.description.length > 25? row.description.slice(0, 22) + '...': row.description: '—'}</td> */}
+                  <td>{row.rfq_name}</td>
                   <td>{row.date}</td>
                   <td>{row.end_date}</td>
                   {/* <td>{row.amount}</td> */}

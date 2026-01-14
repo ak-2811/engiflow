@@ -89,6 +89,54 @@ function handleSubmit(e) {
       }
     }, [navigate]);
 
+  //Project Manager Fetch
+  const [projectManagers, setProjectManagers] = useState([]);
+
+useEffect(() => {
+  const token = localStorage.getItem("access");
+
+  axios.get("http://127.0.0.1:8000/api/project-managers/list/", {
+    headers: { Authorization: `Bearer ${token}` }
+  })
+  .then(res => {
+  console.log("PM LIST:", res.data);
+  setProjectManagers(res.data);
+})
+  .catch(err => console.error(err));
+}, []);
+
+  
+  //Project Manager Assign
+  const [selectedPM, setSelectedPM] = useState("");
+  const [assignedPM, setAssignedPM] = useState(null);
+
+  useEffect(() => {
+  if (rfq?.assigned_to) {
+    setAssignedPM(rfq.assigned_to);
+    setSelectedPM(String(rfq.assigned_to.id));
+  }
+}, [rfq]);
+
+
+  //Project Manager Subimt/Assign
+  const assignPM = async () => {
+  if (!selectedPM) return;
+
+  const token = localStorage.getItem("access");
+
+  const res = await axios.post(
+    `http://127.0.0.1:8000/api/service/rfq/${rfq.raw_id}/assign-pm/`,
+    { project_manager_id: selectedPM },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  setAssignedPM(res.data.assigned_to); // 🔒 makes readonly
+  navigate('/admin');
+};
+
+
+
+
   // Comment state
   const [comments, setComments] = useState([
     { user: 'Admin', text: 'Please review the attached documents.', image: null },
@@ -97,6 +145,36 @@ function handleSubmit(e) {
   const [commentText, setCommentText] = useState('');
   const [commentFile, setCommentFile] = useState(null);
   const [commentFileUrl, setCommentFileUrl] = useState(null);
+
+  // Fetch chat message
+  useEffect(() => {
+    if (!rfq?.raw_id) return;
+
+    const token = localStorage.getItem("access");
+
+    axios.get(
+      `http://127.0.0.1:8000/api/chat/rfq/${rfq.raw_id}/admin-client/`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    )
+    .then(res => {
+      const formatted = res.data.map(m => ({
+        user: m.sender_role === "admin" ? "Admin" : "Client",
+        text: m.message,
+        image: m.attachment
+          ? {
+              url: m.attachment,
+              type: m.attachment.endsWith(".pdf")
+                ? "application/pdf"
+                : "image"
+            }
+          : null
+      }));
+
+      setComments(formatted);
+    })
+    .catch(err => console.error(err));
+  }, [rfq]);
+
   const role = localStorage.getItem('role')
   const isAdmin= role === 'admin'
   useEffect(() => {
@@ -113,27 +191,51 @@ function handleSubmit(e) {
   if (!rfq) return <div style={{ padding: 40 }}>Loading RFQ...</div>
 
 
-  function handleCommentSubmit(e) {
+    const handleCommentSubmit = async (e) => {
     e.preventDefault();
+
     if (!commentText && !commentFile) return;
-    setComments([
-      ...comments,
+
+    const token = localStorage.getItem("access");
+
+    const formData = new FormData();
+    formData.append("message", commentText);
+    if (commentFile) {
+      formData.append("attachment", commentFile);
+    }
+
+    await axios.post(
+      `http://127.0.0.1:8000/api/chat/rfq/${rfq.raw_id}/admin-client/send/`,
+      formData,
       {
-        user: 'You',
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data"
+        }
+      }
+    );
+
+    // ✅ optimistic UI update
+    setComments(prev => [
+      ...prev,
+      {
+        user: role==="admin"?"Admin":"Client",
         text: commentText,
-        attachment: commentFile
+        image: commentFile
           ? {
-              name: commentFile.name,
               url: commentFileUrl,
               type: commentFile.type
             }
           : null
       }
     ]);
+
+    // cleanup
     setCommentText('');
     setCommentFile(null);
     setCommentFileUrl(null);
-  }
+  };
+
 
   function handleFileChange(e) {
     const file = e.target.files[0];
@@ -141,6 +243,7 @@ function handleSubmit(e) {
       setCommentFile(file);
       setCommentFileUrl(URL.createObjectURL(file));
     }
+    else return;
   }
   function renderAdminSidebar() {
     return (
@@ -159,16 +262,56 @@ function handleSubmit(e) {
               </button>
             </li>
             <li className="dashboard-nav-item">
-              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+              <button className="nav-link" onClick={()=>{localStorage.setItem('Status','All');navigate('/rfqs?panel=Admin&status=All')}} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
                  <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs
               </button>
             </li>
           </ul>
         </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.clear();
+            navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
       </aside>
     );
   }
 
+  function renderPMSidebar() {
+    return (
+      <aside className="side-nav">
+        <div className="nav-brand">EngiFlow</div>
+        <nav>
+          <ul>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={()=>navigate('/pm')} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="dashboard" style={{marginRight: '8px'}}>📊</span>Home
+              </button>
+            </li>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="projects" style={{marginRight: '8px'}}>📁</span>Projects
+              </button>
+            </li>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={()=>{
+                localStorage.setItem('Status','All'); 
+                navigate('/rfqs?panel=Project_manager&status=All');}} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                 <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.removeItem('isLoggedIn');
+            navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
+      </aside>
+    );
+  }
   function renderDashboardSidebar() {
     return (
       <aside className="side-nav">
@@ -276,7 +419,7 @@ function handleSubmit(e) {
       {/* Logout Logic */}
       <div className="nav-footer">
           <button className="btn" onClick={() => {
-            localStorage.removeItem('isLoggedIn');
+            localStorage.clear();
             navigate('/', { replace: true });
           }}>Sign Out</button>
       </div>
@@ -286,14 +429,14 @@ function handleSubmit(e) {
 
   return (
     <div className="rfq-detail-layout">
-      {role==='admin'?renderAdminSidebar():renderDashboardSidebar()}
+      {role==='admin'?renderAdminSidebar():role=== 'project_manager'?renderPMSidebar():renderDashboardSidebar()}
       <div style={{flex: 1,width: '100%',padding: '0 32px',textAlign: 'left'}}>
         <div style={{ marginBottom: '18px', color: '#757575', fontSize: '1rem', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: '1.1em', cursor: 'pointer' }} onClick={() => navigate(`/admin/rfqs?panel=${role}`, { state: { role } })}>&larr;</span> Back to RFQ Listings
+          <span style={{ fontSize: '1.1em', cursor: 'pointer' }} onClick={() => {role==='admin'?navigate('/admin'):role==='project_manager'?navigate('/pm'):navigate('/dashboard')}}>&larr;</span> Back to RFQ Listings
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '10px' }}>
           <span style={{ background: '#ede9fe', color: '#6366f1', fontWeight: 600, borderRadius: 8, padding: '4px 16px', fontSize: '1.05rem', letterSpacing: 1 }}>{rfq.id}</span>
-          <span style={{ background: '#fff7d6', color: '#bfa100', fontWeight: 600, borderRadius: 8, padding: '4px 14px', fontSize: '1.05rem' }}>{rfq.status}</span>
+          <span style={{ background: '#fff7d6', color: '#bfa100', fontWeight: 600, borderRadius: 8, padding: '4px 14px', fontSize: '1.05rem' }}>{role==='admin'?rfq.admin_status:role==='project_manager'?rfq.pm_status:rfq.status}</span>
         </div>
         <h1 style={{ fontSize: '2.6rem', fontWeight: 800, margin: '0 0 18px 0' }}>{rfq.title}</h1>
         <div style={{ display: 'flex', gap: '16px', marginBottom: '24px' }}>
@@ -350,12 +493,12 @@ function handleSubmit(e) {
               {comments.map((c, i) => (
                 <div key={i} style={{marginBottom: 14}}>
                   <span style={{fontWeight: 600, color: c.user === 'Admin' ? '#5b4fff' : c.user === 'Project Manager' ? '#1dbf73' : '#18181b'}}>{c.user}:</span> {c.text}
-                  {c.attachment && c.attachment.type.startsWith('image') && (
-                    <img src={c.attachment.url} alt="comment attachment" style={{marginLeft: 10, maxHeight: 40, borderRadius: 6, verticalAlign: 'middle'}} />
+                  {c.image && c.image.type.startsWith('image') && (
+                    <img src={c.image.url} alt="comment attachment" style={{marginLeft: 10, maxHeight: 40, borderRadius: 6, verticalAlign: 'middle'}} />
                   )}
-                  {c.attachment && c.attachment.type === 'application/pdf' && (
-                    <a href={c.attachment.url} target="_blank" rel="noopener noreferrer" style={{marginLeft: 10, color: '#5b4fff', textDecoration: 'underline', fontSize: '0.98em'}}>
-                      <span role="img" aria-label="pdf">📄</span> {c.attachment.name}
+                  {c.image && c.image.type === 'application/pdf' && (
+                    <a href={c.image.url} target="_blank" rel="noopener noreferrer" style={{marginLeft: 10, color: '#5b4fff', textDecoration: 'underline', fontSize: '0.98em'}}>
+                      <span role="img" aria-label="pdf">📄</span> {c.image.name}
                     </a>
                   )}
                 </div>
@@ -381,12 +524,15 @@ function handleSubmit(e) {
             <div style={{ fontWeight: 700, fontSize: '1.25rem', marginBottom: 18 }}>Assign RFQ</div>
             <div style={{ marginBottom: 24 }}>
               <label style={{ fontWeight: 500, color: '#757575', fontSize: '1.08rem', display: 'block', marginBottom: 8 }}>Assign to Project Manager:</label>
-              <select style={{ width: '100%', padding: '10px', borderRadius: 8, border: '1.5px solid #e0e7ff', fontSize: '1.05rem', marginBottom: 12 }}>
-                <option>Select Project Manager</option>
-                <option>John Doe</option>
-                <option>Jane Smith</option>
+              <select value={selectedPM} onChange={e => setSelectedPM(e.target.value)} disabled={!!assignedPM} style={{ width: '100%', padding: '10px', borderRadius: 8, border: '1.5px solid #e0e7ff', fontSize: '1.05rem', marginBottom: 12 }}>
+                <option value="">Select Project Manager</option>
+                    {Array.isArray(projectManagers) && projectManagers.map(pm => (
+                      <option key={pm.id} value={pm.id}>
+                        {pm.name}
+                      </option>
+                    ))}
               </select>
-              <button style={{ background: '#5b4fff', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 0', fontWeight: 600, fontSize: '1.05rem', cursor: 'pointer', width: '100%' }}>Assign to Project Manager</button>
+              <button onClick={assignPM} disabled={!!assignedPM || rfq.admin_status === "Active"} style={{ background: '#5b4fff', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 0', fontWeight: 600, fontSize: '1.05rem', cursor: 'pointer', width: '100%' }}>{assignedPM ? "Assigned" : "Assign to Project Manager"}</button>
             </div>
             {/* <div style={{ marginBottom: 0 }}>
               <label style={{ fontWeight: 500, color: '#757575', fontSize: '1.08rem', display: 'block', marginBottom: 8 }}>Assign to Sub Contractor:</label>

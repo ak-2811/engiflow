@@ -14,6 +14,7 @@ const [form, setForm] = useState({
   services: [],
   title: '',
   description: '',
+  rfq_name: '',
   end_date: '',
   images: []
 })
@@ -86,8 +87,10 @@ function handleSubmit(e) {
   const [rfqs, setRfqs] = useState([]);
 
   const role = localStorage.getItem("role"); // admin | client
+  const Status=localStorage.getItem("Status");
   const panel = role === "admin" ? "admin" : "dashboard";
   console.log('rfq:',rfqs)
+  const title = Status === 'Pending' ? 'Pending RFQs' : Status === 'All' ? 'All RFQs' : 'Active RFQs';
 
   React.useEffect(() => {
       if (localStorage.getItem('isLoggedIn') !== 'true') {
@@ -96,8 +99,7 @@ function handleSubmit(e) {
     }, [navigate])
 
   useEffect(() => {
-    if (role === "admin"){
-
+    if (role === "admin" && Status==="Active"){
     axios
       .get("http://127.0.0.1:8000/api/service/admin/rfqs/active/", {
         headers: {
@@ -107,7 +109,30 @@ function handleSubmit(e) {
       .then((res) => setRfqs(res.data))
       .catch((err) => console.error(err));
     }
-    if (role === "client"){
+
+    if (role === "admin" && Status==="Pending"){
+    axios
+      .get("http://127.0.0.1:8000/api/service/admin/rfqs/pending/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => setRfqs(res.data))
+      .catch((err) => console.error(err));
+    }
+
+    if (role === "admin" && Status==="All"){
+    axios
+      .get("http://127.0.0.1:8000/api/service/admin/rfqs/all/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => setRfqs(res.data))
+      .catch((err) => console.error(err));
+    }
+
+    if (role === "client" && Status==='Active'){
       axios
       .get("http://127.0.0.1:8000/api/service/client/rfqs/active/", {
         headers: {
@@ -117,7 +142,40 @@ function handleSubmit(e) {
       .then((res) => setRfqs(res.data))
       .catch((err) => console.error(err));
     }
-  }, [role]);
+
+    if (role === "project_manager" && Status==='All'){
+      axios
+      .get("http://127.0.0.1:8000/api/service/pm/rfqs/all/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => setRfqs(res.data))
+      .catch((err) => console.error(err));
+    }
+    
+    if (role === "project_manager" && Status==='Active'){
+      axios
+      .get("http://127.0.0.1:8000/api/service/pm/rfqs/active/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => setRfqs(res.data))
+      .catch((err) => console.error(err));
+    }
+
+    if (role === "project_manager" && Status==='Pending'){
+      axios
+      .get("http://127.0.0.1:8000/api/service/pm/rfqs/pending/", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("access")}`,
+        },
+      })
+      .then((res) => setRfqs(res.data))
+      .catch((err) => console.error(err));
+    }
+  }, [role,Status]);
 
     // const params = new URLSearchParams(location.search);
     // // HashRouter can place the query inside the hash fragment (e.g. #/rfq/id?panel=dashboard)
@@ -154,12 +212,53 @@ function handleSubmit(e) {
               </button>
             </li>
             <li className="dashboard-nav-item">
-              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+              <button className="nav-link" onClick={()=>{localStorage.setItem('Status','All');navigate('/rfqs?panel=Admin&status=All')}} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
                 <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs
               </button>
             </li>
           </ul>
         </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.clear();
+            navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
+      </aside>
+    );
+  }
+
+  function renderPMSidebar() {
+    return (
+      <aside className="side-nav">
+        <div className="nav-brand">EngiFlow</div>
+        <nav>
+          <ul>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={()=>navigate('/pm')} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="dashboard" style={{marginRight: '8px'}}>📊</span>Home
+              </button>
+            </li>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="projects" style={{marginRight: '8px'}}>📁</span>Projects
+              </button>
+            </li>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={()=>{
+                localStorage.setItem('Status','All'); 
+                navigate('/rfqs?panel=Project_manager&status=All');}} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                 <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>RFQs
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.removeItem('isLoggedIn');
+            navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
       </aside>
     );
   }
@@ -271,7 +370,7 @@ function handleSubmit(e) {
         {/* Logout Logic */}
         <div className="nav-footer">
           <button className="btn" onClick={() => {
-            localStorage.removeItem('isLoggedIn');
+            localStorage.clear();
             navigate('/', { replace: true });
           }}>Sign Out</button>
         </div>
@@ -281,18 +380,17 @@ function handleSubmit(e) {
 
   return (
     <div className="dashboard-layout">
-      {role === 'admin' ? renderAdminSidebar() : renderDashboardSidebar()}
-
+      {role==='admin'?renderAdminSidebar():role=== 'project_manager'?renderPMSidebar():renderDashboardSidebar()}
       <main className="dashboard-main">
         <header style={{ padding: '28px 24px 0 24px' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: 6, fontWeight: 800, color: '#5b4fff' }}>Active RFQs</h1>
-          <p style={{ color: '#6b7280', marginBottom: 20 }}>List of currently active requests for quotation.</p>
+          <h1 style={{ fontSize: '2rem', marginBottom: 6, fontWeight: 800, color: '#5b4fff' }}>{title}</h1>
+          <p style={{ color: '#6b7280', marginBottom: 20 }}> {Status === 'Pending' ? 'List of RFQs awaiting review or action.' : Status === 'All' ? 'All RFQs across all statuses.' : 'List of currently active requests for quotation.'}</p>
         </header>
 
         <div style={{ padding: 24 }}>
           <section className="admin-table-section">
             <div className="admin-table-header">
-              <h2>Active RFQs</h2>
+              <h2>{title}</h2>
               <div className="admin-table-search">
                 <input type="text" placeholder="Search RFQs..." />
               </div>
@@ -303,7 +401,7 @@ function handleSubmit(e) {
                 <tr>
                   <th>ID</th>
                   <th>Client</th>
-                  <th>Description</th>
+                  <th>RFQ Name</th>
                   <th>Submitted Date</th>
                   <th>End Date</th>
                 </tr>
@@ -313,7 +411,8 @@ function handleSubmit(e) {
                   <tr key={i} style={{ cursor: 'pointer' }} onClick={() => navigate(`/rfq/${r.raw_id}?panel=${role}`, { state: { role } })}>
                     <td>{r.id}</td>
                     <td><b>{r.client}</b></td>
-                    <td>{r.description.length > 30 ? r.description.slice(0, 30) + '...' : r.description}</td>
+                    {/* <td>{r.description.length > 30 ? r.description.slice(0, 30) + '...' : r.description}</td> */}
+                    <td>{r.rfq_name}</td>
                     <td>{r.date}</td>
                     <td>{r.end_date}</td>
                   </tr>

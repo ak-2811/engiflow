@@ -29,7 +29,11 @@ export default function Login() {
       // console.log("Data",res.data)
       if (res.data.role === "admin") {
       navigate("/admin");
-    } else {
+    }
+    if (res.data.role === "project_manager"){
+      navigate("/pm")
+    } 
+    if(res.data.role=== "client") {
       navigate("/dashboard");
     }
     // later this will go to client dashboard
