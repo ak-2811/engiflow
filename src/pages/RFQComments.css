@@ -1,0 +1,55 @@
+/* RFQ comment panel and items styling */
+.rfq-comments-panel {
+  /* Match the purple-tinted RFQ detail look */
+  background: linear-gradient(160deg, #f3e8ff 0%, #f8fafc 100%);
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid rgba(91,79,255,0.06);
+}
+
+.comments-list {
+  max-height: 240px;
+  overflow-y: auto;
+  padding-right: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: #7c5bff transparent;
+}
+
+.comments-list::-webkit-scrollbar {
+  width: 8px;
+}
+.comments-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.comments-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg,#c7d2fe,#7c5bff);
+  border-radius: 999px;
+}
+
+.comment-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  border-radius: 10px;
+  background: #ffffff;
+  border: 1px solid rgba(92, 80, 255, 0.04);
+}
+
+.comment-item.admin { background: linear-gradient(90deg,#fbf8ff,#fff); border-left: 4px solid #5b4fff; }
+.comment-item.pm { background: linear-gradient(90deg,#f7fffa,#fff); border-left: 4px solid #10b981; }
+.comment-item.you { background: linear-gradient(90deg,#ffffff,#fff); border-left: 4px solid #d1d5db; }
+
+.comment-user { font-weight: 800; color: #111827; font-size: 0.95rem; }
+.comment-recipient { font-size: 0.82rem; color: #6b7280; margin-top: 6px; }
+.comment-text { color: #374151; line-height: 1.6; }
+.comment-attachment img { max-height: 56px; border-radius: 8px; }
+
+.comment-input { transition: box-shadow .15s ease; }
+.comment-input:focus { box-shadow: 0 8px 22px rgba(91,79,255,0.08); outline: none; }
+.comment-post-btn { transition: transform .08s ease; }
+.comment-post-btn:active { transform: translateY(1px); }

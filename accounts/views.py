@@ -33,6 +33,8 @@ class LoginView(generics.GenericAPIView):
             role = "client"
         elif hasattr(user, "project_manager"):
             role = "project_manager"
+        elif hasattr(user, "subvendor"):
+            role = "subvendor"
 
         refresh = RefreshToken.for_user(user)
 

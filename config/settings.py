@@ -62,6 +62,8 @@ INSTALLED_APPS = [
     "corsheaders",
     "project_managers",
     "chat",
+    "deliverables",
+    "subvendors",
 ]
 
 MIDDLEWARE = [

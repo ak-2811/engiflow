@@ -88,8 +88,7 @@ function handleSubmit(e) {
 
   const role = localStorage.getItem("role"); // admin | client
   const Status=localStorage.getItem("Status");
-  const panel = role === "admin" ? "admin" : "dashboard";
-  console.log('rfq:',rfqs)
+  // const panel = role === "admin" ? "admin" : "dashboard";
   const title = Status === 'Pending' ? 'Pending RFQs' : Status === 'All' ? 'All RFQs' : 'Active RFQs';
 
   React.useEffect(() => {
@@ -263,6 +262,34 @@ function handleSubmit(e) {
     );
   }
 
+function renderSubcontractorSidebar() {
+    return (
+      <aside className="side-nav">
+        <div className="nav-brand">EngiFlow</div>
+        <nav>
+          <ul>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={() => navigate('/subcontractor')} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="dashboard" style={{marginRight: '8px'}}>🏠</span>Home
+              </button>
+            </li>
+            <li className="dashboard-nav-item">
+              <button className="nav-link" onClick={() => navigate('/admin/rfqs?panel=subcontractor&status=all', { state: { panel: 'subcontractor' } })} style={{width: '100%', textAlign: 'left', background: 'none', border: 'none', padding: 0, cursor: 'pointer'}}>
+                <span role="img" aria-label="rfqs" style={{marginRight: '8px'}}>📄</span>All RFQs
+              </button>
+            </li>
+          </ul>
+        </nav>
+        <div className="nav-footer">
+          <button className="btn" onClick={() => {
+            localStorage.removeItem('isLoggedIn');
+            navigate('/', { replace: true });
+          }}>Sign Out</button>
+        </div>
+      </aside>
+    );
+  }
+
   function renderDashboardSidebar() {
     return (
       <aside className="side-nav">
@@ -380,48 +407,49 @@ function handleSubmit(e) {
 
   return (
     <div className="dashboard-layout">
-      {role==='admin'?renderAdminSidebar():role=== 'project_manager'?renderPMSidebar():renderDashboardSidebar()}
-      <main className="dashboard-main">
-        <header style={{ padding: '28px 24px 0 24px' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: 6, fontWeight: 800, color: '#5b4fff' }}>{title}</h1>
-          <p style={{ color: '#6b7280', marginBottom: 20 }}> {Status === 'Pending' ? 'List of RFQs awaiting review or action.' : Status === 'All' ? 'All RFQs across all statuses.' : 'List of currently active requests for quotation.'}</p>
-        </header>
+      {role==='admin'?renderAdminSidebar():role=== 'project_manager'?renderPMSidebar():role=== 'subvendor'?renderSubcontractorSidebar():renderDashboardSidebar()}
+      {role!=='subvendor'&& (
+        <main className="dashboard-main">
+          <header style={{ padding: '28px 24px 0 24px' }}>
+            <h1 style={{ fontSize: '2rem', marginBottom: 6, fontWeight: 800, color: '#5b4fff' }}>{title}</h1>
+            <p style={{ color: '#6b7280', marginBottom: 20 }}> {Status === 'Pending' ? 'List of RFQs awaiting review or action.' : Status === 'All' ? 'All RFQs across all statuses.' : 'List of currently active requests for quotation.'}</p>
+          </header>
 
-        <div style={{ padding: 24 }}>
-          <section className="admin-table-section">
-            <div className="admin-table-header">
-              <h2>{title}</h2>
-              <div className="admin-table-search">
-                <input type="text" placeholder="Search RFQs..." />
+          <div style={{ padding: 24 }}>
+            <section className="admin-table-section">
+              <div className="admin-table-header">
+                <h2>{title}</h2>
+                <div className="admin-table-search">
+                  <input type="text" placeholder="Search RFQs..." />
+                </div>
               </div>
-            </div>
 
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Client</th>
-                  <th>RFQ Name</th>
-                  <th>Submitted Date</th>
-                  <th>End Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rfqs.map((r, i) => (
-                  <tr key={i} style={{ cursor: 'pointer' }} onClick={() => navigate(`/rfq/${r.raw_id}?panel=${role}`, { state: { role } })}>
-                    <td>{r.id}</td>
-                    <td><b>{r.client}</b></td>
-                    {/* <td>{r.description.length > 30 ? r.description.slice(0, 30) + '...' : r.description}</td> */}
-                    <td>{r.rfq_name}</td>
-                    <td>{r.date}</td>
-                    <td>{r.end_date}</td>
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Client</th>
+                    <th>RFQ Name</th>
+                    <th>Submitted Date</th>
+                    <th>End Date</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </section>
-        </div>
-      </main>
+                </thead>
+                <tbody>
+                  {rfqs.map((r, i) => (
+                    <tr key={i} style={{ cursor: 'pointer' }} onClick={() => navigate(`/rfq/${r.raw_id}?panel=${role}`, { state: { role } })}>
+                      <td>{r.id}</td>
+                      <td><b>{r.client}</b></td>
+                      {/* <td>{r.description.length > 30 ? r.description.slice(0, 30) + '...' : r.description}</td> */}
+                      <td>{r.rfq_name}</td>
+                      <td>{r.date}</td>
+                      <td>{r.end_date}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </main>)}
     </div>
   );
 }

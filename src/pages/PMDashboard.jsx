@@ -41,7 +41,7 @@ export default function PMDashboard() {
     {
       icon: '📄',
       label: 'Active RFQs',
-      value: rfqStats.total_pending,
+      value: rfqStats.total_active,
       changeType: 'up',
     },
     {

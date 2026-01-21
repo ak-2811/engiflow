@@ -12,5 +12,6 @@ class RFQChatMessageSerializer(serializers.ModelSerializer):
             "sender_name",
             "message",
             "attachment",
+            "chat_type",
             "created_at",
         ]

@@ -8,6 +8,8 @@ import AdminDashboard from './pages/AdminDashboard'
 import ActiveRFQs from './pages/ActiveRFQs'
 import RFQDetail from './pages/RFQDetail'
 import PMDashboard from './pages/PMDashboard'
+import SubVendorDashboard from './pages/SubcontractorDashboard'
+import ActiveRFQSubvendor from './pages/ActiveRFQSubvendor'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import './App.css'
 
@@ -24,6 +26,8 @@ function App() {
         <Route path="structural" element={<DashboardServicesStructural />} />
       </Route>
       <Route path='/admin' element={<AdminDashboard />} />
+      <Route path='/subvendor' element={<SubVendorDashboard />} />
+      <Route path='/deliverable' element={<ActiveRFQSubvendor />} />
       <Route path='/rfqs' element={<ActiveRFQs />} />
       <Route path="/rfq/:id" element={<RFQDetail />} />
       <Route path="/pm" element={< PMDashboard/>} />

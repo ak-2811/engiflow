@@ -415,6 +415,7 @@ export default function Signup() {
                     <option value="">Select user type</option>
                     <option value="project_manager">Project Manager</option>
                     <option value="client">Client</option>
+                    <option value="subvendor">Sub Vendor</option>
                   </select>
                 </div>
 

@@ -36,6 +36,9 @@ export default function Login() {
     if(res.data.role=== "client") {
       navigate("/dashboard");
     }
+    if(res.data.role=== "subvendor") {
+      navigate("/subvendor");
+    }
     // later this will go to client dashboard
     // alert("Login successful");
     // alert("Logged in (stub)");
